@@ -109,68 +109,70 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 }
 ```
 
+
+##Changelog:
 <details>
-<summary>##Changelog:</summary>
+<summary>Click to Open Spoiler</summary>
 <p>
 **2.2.0:**
-<li>Fixed an improper indexing of a_sSteamIDs in GetTags.<li>
-<li>Added debug cvar and full debug code.<li>
-<li>Converted several things to use 1.8 syntax classes (methodmaps) where they weren't before.<li>
-<li>Modidied the GetTags function a bit.<li>
-<li>Added IsValidClient check inside GetTags, though i believe it was filtered in the calling functions, but perhaps not each instance.<li>
+<li>Fixed an improper indexing of a_sSteamIDs in GetTags.</li>
+<li>Added debug cvar and full debug code.</li>
+<li>Converted several things to use 1.8 syntax classes (methodmaps) where they weren't before.</li>
+<li>Modidied the GetTags function a bit.</li>
+<li>Added IsValidClient check inside GetTags, though i believe it was filtered in the calling functions, but perhaps not each instance.</li>
 
 **2.1.4:**
-<li>Added spec cmd hooks.<li>
+<li>Added spec cmd hooks.</li>
 
 **2.1.3:**
-<li>Accidently returned Plugin_Handled instead of Plugin_Continue on the hooks for jointeam and joinclass. Fixed that.<li>
+<li>Accidently returned Plugin_Handled instead of Plugin_Continue on the hooks for jointeam and joinclass. Fixed that.</li>
 
 **2.1.2:**
-<li>Removed if(!g_hUseMySQL.BoolValue){} in Event_Recheck. I dont recall why that check was there...<li>
-<li>Added hooks for jointeam and joinclass commands. Previously, only the player_team event was being hooked.<li>
+<li>Removed if(!g_hUseMySQL.BoolValue){} in Event_Recheck. I dont recall why that check was there...</li>
+<li>Added hooks for jointeam and joinclass commands. Previously, only the player_team event was being hooked.</li>
 
 **2.1.1:**
-<li>Added check in flags section to filter out new steam ID types.<li>
-<li>Fixed index error in new steam ID array.<li>
-<li>Added check for if client is authorized when getting the 4 steam IDs, else loop client.<li>
+<li>Added check in flags section to filter out new steam ID types.</li>
+<li>Fixed index error in new steam ID array.</li>
+<li>Added check for if client is authorized when getting the 4 steam IDs, else loop client.</li>
 
 **2.1.0:**
-<li>Added native to reload plugin.<li>
-<li>Added native to check if using mysql.<li>
-<li>Added plugin library registration.<li>
-<li>Added check for NULL server_ip field in mysql (previously, it checked for blanks (''), so this was added to be extra safe, not due to any problems).<li>
-<li>Added `dont_remove` column to support other plugins that are adding into the database. Default = 1. Plugins adding in setups can add it with a 0 to be able to override their own and know it is safe.<li>
-<li>Added code so that setups using steam IDs can use AuthId_Steam2 (both universe 0 and 1), AuthId_Steam3, or AuthId_SteamID64.<li>
-<li>Changed cvars to use methodmaps.<li>
+<li>Added native to reload plugin.</li>
+<li>Added native to check if using mysql.</li>
+<li>Added plugin library registration.</li>
+<li>Added check for NULL server_ip field in mysql (previously, it checked for blanks (''), so this was added to be extra safe, not due to any problems).</li>
+<li>Added `dont_remove` column to support other plugins that are adding into the database. Default = 1. Plugins adding in setups can add it with a 0 to be able to override their own and know it is safe.</li>
+<li>Added code so that setups using steam IDs can use AuthId_Steam2 (both universe 0 and 1), AuthId_Steam3, or AuthId_SteamID64.</li>
+<li>Changed cvars to use methodmaps.</li>
 
 **2.0.1:**
-<li>Added check for blank IP before running queries just to be safe.<li>
+<li>Added check for blank IP before running queries just to be safe.</li>
 
 **2.0:**
-<li>Converted to 1.8 syntax.<li>
-<li>Added option to use mysql DB and recoded plugin to support either MySQL or kv file.<li>
-<li>Added "enabled" key value.<li>
-<li>Edited documentation to include "exclude" key-value.<li>
-<li>Added cache of all setups.<li>
-<li>Added round-end re-check of DB setups count for checking if a new setup has been added.<li>
+<li>Converted to 1.8 syntax.</li>
+<li>Added option to use mysql DB and recoded plugin to support either MySQL or kv file.</li>
+<li>Added "enabled" key value.</li>
+<li>Edited documentation to include "exclude" key-value.</li>
+<li>Added cache of all setups.</li>
+<li>Added round-end re-check of DB setups count for checking if a new setup has been added.</li>
 
 **1.5:**
-<li>Added "ignore" kv.<li>
+<li>Added "ignore" kv.</li>
 
 **1.4:**
-<li>Edited togsclantags_enforcetags cvar: was missing 'c' in name, and added an option to allow tags if they exist in the cfg.<li>
+<li>Edited togsclantags_enforcetags cvar: was missing 'c' in name, and added an option to allow tags if they exist in the cfg.</li>
 
 **1.3:**
-<li>Minor edits to make sure clients load tag when spawning in late, etc.<li>
+<li>Minor edits to make sure clients load tag when spawning in late, etc.</li>
 
 **1.2:**
-<li>Added OnRebuildAdminCache event.<li>
-<li>Added cvar for rechecking client against cfg file on a configurable interval. This was added so that the plugin can interact with other plugins that dont fwd admin cache changes properly.<li>
+<li>Added OnRebuildAdminCache event.</li>
+<li>Added cvar for rechecking client against cfg file on a configurable interval. This was added so that the plugin can interact with other plugins that dont fwd admin cache changes properly.</li>
 
 **1.1:**
-<li>Fixed memory leak due to missing a CloseHandle on one of the returns.<li>
+<li>Fixed memory leak due to missing a CloseHandle on one of the returns.</li>
 
 **1.0:**
-<li>Plugin coded for private. Released to Allied Modders after suggestion from requester.<li>
+<li>Plugin coded for private. Released to Allied Modders after suggestion from requester.</li>
 </p>
 </details>
