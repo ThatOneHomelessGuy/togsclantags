@@ -1,0 +1,10 @@
+	"togsclantags"
+	{
+		"driver"			"mysql"
+		"host"				"YOURHOSTHERE"
+		"database"			"DB_NAME"
+		"user"				"DB_USER"
+		"pass"				"USER_PW"
+		"timeout"			"300"
+	}
+	
