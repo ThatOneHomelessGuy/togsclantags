@@ -22,7 +22,8 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 
 
 ##Default Cfg File:
-```
+<p>
+<pre><code>
 //////////////////////////////////////////////////////////////////
 //
 // SAMPLE SETUP:
@@ -107,7 +108,8 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 		"tag"		"[MEMBER]"	 //this tag IS INCLUDED in the allowable tags list when togsclantags_enforcetags = 1
 	}
 }
-```
+</code></pre>
+</p>
 
 
 
