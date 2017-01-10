@@ -30,6 +30,7 @@ togsclantags_use_mysql - Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg
 
 
 ##Default Cfg File:
+```
 //////////////////////////////////////////////////////////////////
 //
 // SAMPLE SETUP:
@@ -113,7 +114,7 @@ togsclantags_use_mysql - Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg
 		"flag"		"a;st"
 		"tag"		"[MEMBER]"	 //this tag IS INCLUDED in the allowable tags list when togsclantags_enforcetags = 1
 	}
-}
+}```
 
 
 
