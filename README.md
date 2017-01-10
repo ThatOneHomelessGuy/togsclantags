@@ -182,3 +182,10 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 <li>Plugin coded for private. Released to Allied Modders after suggestion from requester.</li>
 </p>
 </details>
+
+
+
+
+
+
+###Check out my plugin list: http://www.togcoding.tech/togcoding/index.php
