@@ -22,6 +22,8 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 
 
 ##Default Cfg File:
+<details>
+<summary>Click to Open Spoiler</summary>
 <p>
 <pre><code>
 //////////////////////////////////////////////////////////////////
@@ -110,7 +112,7 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 }
 </code></pre>
 </p>
-
+</details>
 
 
 
