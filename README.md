@@ -16,16 +16,11 @@ Configure your setups in the config file or your mysql database, then load plugi
 
 
 ##CVars:
-
-togsclantags_admflag - Admin flag(s) used for sm_rechecktags command.
-
-togsclantags_bots - Do bots get tags? (1 = yes, 0 = no).
-
-togsclantags_enforcetags -If no matching setup is found, should their tag be forced to be blank? (0 = allow players setting any clan tags they want, 1 = if no matching setup found, they can only use tags found in the cfg file, 2 = only get tags by having a matching setup in cfg file).
-
-togsclantags_updatefreq - Frequency to re-load clients from cfg file (0 = only check once). This function is namely used to help interact with other plugins changing admin status late.
-
-togsclantags_use_mysql - Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups).
+* togsclantags_admflag - Admin flag(s) used for sm_rechecktags command.
+* togsclantags_bots - Do bots get tags? (1 = yes, 0 = no).
+* togsclantags_enforcetags -If no matching setup is found, should their tag be forced to be blank? (0 = allow players setting any clan tags they want, 1 = if no matching setup found, they can only use tags found in the cfg file, 2 = only get tags by having a matching setup in cfg file).
+* togsclantags_updatefreq - Frequency to re-load clients from cfg file (0 = only check once). This function is namely used to help interact with other plugins changing admin status late.
+* togsclantags_use_mysql - Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups).
 
 
 
