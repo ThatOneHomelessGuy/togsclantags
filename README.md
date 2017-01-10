@@ -112,22 +112,27 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 
 ##Changelog:
 **2.2.0:**
-  *   * Fixed an improper indexing of a_sSteamIDs in GetTags.
+  * Fixed an improper indexing of a_sSteamIDs in GetTags.
   * Added debug cvar and full debug code.
   * Converted several things to use 1.8 syntax classes (methodmaps) where they weren't before.
   * Modidied the GetTags function a bit.
   * Added IsValidClient check inside GetTags, though i believe it was filtered in the calling functions, but perhaps not each instance.
+
 **2.1.4:**
   * Added spec cmd hooks.
+
 **2.1.3:**
   * Accidently returned Plugin_Handled instead of Plugin_Continue on the hooks for jointeam and joinclass. Fixed that.
+
 **2.1.2:**
   * Removed if(!g_hUseMySQL.BoolValue){} in Event_Recheck. I dont recall why that check was there...
   * Added hooks for jointeam and joinclass commands. Previously, only the player_team event was being hooked.
+
 **2.1.1:**
   * Added check in flags section to filter out new steam ID types.
   * Fixed index error in new steam ID array.
   * Added check for if client is authorized when getting the 4 steam IDs, else loop client.
+
 **2.1.0:**
   * Added native to reload plugin.
   * Added native to check if using mysql.
@@ -136,8 +141,10 @@ This plugin is fully customizable. You can make as many setups as desired, and h
   * Added `dont_remove` column to support other plugins that are adding into the database. Default = 1. Plugins adding in setups can add it with a 0 to be able to override their own and know it is safe.
   * Added code so that setups using steam IDs can use AuthId_Steam2 (both universe 0 and 1), AuthId_Steam3, or AuthId_SteamID64.
   * Changed cvars to use methodmaps.
+
 **2.0.1:**
   * Added check for blank IP before running queries just to be safe.
+
 **2.0:**
   * Converted to 1.8 syntax.
   * Added option to use mysql DB and recoded plugin to support either MySQL or kv file.
@@ -145,16 +152,22 @@ This plugin is fully customizable. You can make as many setups as desired, and h
   * Edited documentation to include "exclude" key-value.
   * Added cache of all setups.
   * Added round-end re-check of DB setups count for checking if a new setup has been added.
+
 **1.5:**
   * Added "ignore" kv.
+
 **1.4:**
   * Edited togsclantags_enforcetags cvar: was missing 'c' in name, and added an option to allow tags if they exist in the cfg.
+
 **1.3:**
   * Minor edits to make sure clients load tag when spawning in late, etc.
+
 **1.2:**
   * Added OnRebuildAdminCache event.
   * Added cvar for rechecking client against cfg file on a configurable interval. This was added so that the plugin can interact with other plugins that dont fwd admin cache changes properly.
+
 **1.1:**
   * Fixed memory leak due to missing a CloseHandle on one of the returns.
+
 **1.0:**
   * Plugin coded for private. Released to Allied Modders after suggestion from requester.
