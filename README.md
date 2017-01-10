@@ -1,11 +1,11 @@
-# togsclantags
-TOGs Clan Tags
+#TOGs Clan Tags
+togsclantags
 
 This plugin is fully customizable. You can make as many setups as desired, and have as many kinds of configurations as desired (all through a config file or database). The setups are fully explained inside the config file, but can also be found below.
 
 
 
-Installation:
+##Installation:
 
 togsclantags.smx to /addons/sourcemod/plugins/ folder.
 
@@ -15,7 +15,7 @@ Configure your setups in the config file or your mysql database, then load plugi
 
 
 
-CVars:
+##CVars:
 
 togsclantags_admflag - Admin flag(s) used for sm_rechecktags command.
 
@@ -29,7 +29,7 @@ togsclantags_use_mysql - Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg
 
 
 
-Default Cfg File:
+##Default Cfg File:
 //////////////////////////////////////////////////////////////////
 //
 // SAMPLE SETUP:
@@ -117,7 +117,7 @@ Default Cfg File:
 
 
 
-Changelog:
+##Changelog:
 1.0:
 * Plugin coded for private. Released to Allied Modders after suggestion from requester.
 1.1:
