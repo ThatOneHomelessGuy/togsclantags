@@ -109,8 +109,9 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 }
 ```
 
-
-##Changelog:
+<details>
+<summary>##Changelog:</summary>
+<p>
 **2.2.0:**
   * Fixed an improper indexing of a_sSteamIDs in GetTags.
   * Added debug cvar and full debug code.
@@ -171,3 +172,5 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 
 **1.0:**
   * Plugin coded for private. Released to Allied Modders after suggestion from requester.
+  </p>
+</details>
