@@ -106,8 +106,8 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 		"flag"		"a;st"
 		"tag"		"[MEMBER]"	 //this tag IS INCLUDED in the allowable tags list when togsclantags_enforcetags = 1
 	}
-}```
-
+}
+```
 
 
 ##Changelog:
