@@ -6,12 +6,9 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 
 
 ##Installation:
-
-togsclantags.smx to /addons/sourcemod/plugins/ folder.
-
-Either use a database setup, similar to databases example file, or use togsclantags.cfg in /addons/sourcemod/configs/ folder.
-
-Configure your setups in the config file or your mysql database, then load plugin, configure your cvars (/cfgs/sourcemod/togsclantags.cfg) and then you're set! Note: After changing the cvars in your cfg file, be sure to rcon the new values to the server so that they take effect immediately.
+* togsclantags.smx to /addons/sourcemod/plugins/ folder.
+* Either use a database setup, similar to databases example file, or use togsclantags.cfg in /addons/sourcemod/configs/ folder.
+* Configure your setups in the config file or your mysql database, then load plugin, configure your cvars (/cfgs/sourcemod/togsclantags.cfg) and then you're set! Note: After changing the cvars in your cfg file, be sure to rcon the new values to the server so that they take effect immediately.
 
 
 
