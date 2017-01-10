@@ -1,5 +1,5 @@
 #TOGs Clan Tags
-togsclantags
+(togsclantags)
 
 This plugin is fully customizable. You can make as many setups as desired, and have as many kinds of configurations as desired (all through a config file or database). The setups are fully explained inside the config file, but can also be found below.
 
