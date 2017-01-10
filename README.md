@@ -16,11 +16,11 @@ Configure your setups in the config file or your mysql database, then load plugi
 
 
 ##CVars:
-* togsclantags_admflag - Admin flag(s) used for sm_rechecktags command.
-* togsclantags_bots - Do bots get tags? (1 = yes, 0 = no).
-* togsclantags_enforcetags -If no matching setup is found, should their tag be forced to be blank? (0 = allow players setting any clan tags they want, 1 = if no matching setup found, they can only use tags found in the cfg file, 2 = only get tags by having a matching setup in cfg file).
-* togsclantags_updatefreq - Frequency to re-load clients from cfg file (0 = only check once). This function is namely used to help interact with other plugins changing admin status late.
-* togsclantags_use_mysql - Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups).
+* **togsclantags_admflag** - Admin flag(s) used for sm_rechecktags command.
+* **togsclantags_bots** - Do bots get tags? (1 = yes, 0 = no).
+* **togsclantags_enforcetags** -If no matching setup is found, should their tag be forced to be blank? (0 = allow players setting any clan tags they want, 1 = if no matching setup found, they can only use tags found in the cfg file, 2 = only get tags by having a matching setup in cfg file).
+* **togsclantags_updatefreq** - Frequency to re-load clients from cfg file (0 = only check once). This function is namely used to help interact with other plugins changing admin status late.
+* **togsclantags_use_mysql** - Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups).
 
 
 
@@ -114,29 +114,24 @@ Configure your setups in the config file or your mysql database, then load plugi
 
 
 ##Changelog:
-1.0:
-* Plugin coded for private. Released to Allied Modders after suggestion from requester.
-1.1:
-* Fixed memory leak due to missing a CloseHandle on one of the returns.
-1.2:
-* Added OnRebuildAdminCache event.
-* Added cvar for rechecking client against cfg file on a configurable interval. This was added so that the plugin can interact with other plugins that dont fwd admin cache changes properly.
-1.3:
-* Minor edits to make sure clients load tag when spawning in late, etc.
-1.4:
-* Edited togsclantags_enforcetags cvar: was missing 'c' in name, and added an option to allow tags if they exist in the cfg.
-1.5:
-* Added "ignore" kv.
-2.0:
-* Converted to 1.8 syntax.
-* Added option to use mysql DB and recoded plugin to support either MySQL or kv file.
-* Added "enabled" key value.
-* Edited documentation to include "exclude" key-value.
-* Added cache of all setups.
-* Added round-end re-check of DB setups count for checking if a new setup has been added.
-2.0.1:
-* Added check for blank IP before running queries just to be safe.
-2.1.0:
+**2.2.0:**
+* Fixed an improper indexing of a_sSteamIDs in GetTags.
+* Added debug cvar and full debug code.
+* Converted several things to use 1.8 syntax classes (methodmaps) where they weren't before.
+* Modidied the GetTags function a bit.
+* Added IsValidClient check inside GetTags, though i believe it was filtered in the calling functions, but perhaps not each instance.
+**2.1.4:**
+* Added spec cmd hooks.
+**2.1.3:**
+* Accidently returned Plugin_Handled instead of Plugin_Continue on the hooks for jointeam and joinclass. Fixed that.
+**2.1.2:**
+* Removed if(!g_hUseMySQL.BoolValue){} in Event_Recheck. I dont recall why that check was there...
+* Added hooks for jointeam and joinclass commands. Previously, only the player_team event was being hooked.
+**2.1.1:**
+* Added check in flags section to filter out new steam ID types.
+* Fixed index error in new steam ID array.
+* Added check for if client is authorized when getting the 4 steam IDs, else loop client.
+**2.1.0:**
 * Added native to reload plugin.
 * Added native to check if using mysql.
 * Added plugin library registration.
@@ -144,20 +139,25 @@ Configure your setups in the config file or your mysql database, then load plugi
 * Added `dont_remove` column to support other plugins that are adding into the database. Default = 1. Plugins adding in setups can add it with a 0 to be able to override their own and know it is safe.
 * Added code so that setups using steam IDs can use AuthId_Steam2 (both universe 0 and 1), AuthId_Steam3, or AuthId_SteamID64.
 * Changed cvars to use methodmaps.
-2.1.1:
-* Added check in flags section to filter out new steam ID types.
-* Fixed index error in new steam ID array.
-* Added check for if client is authorized when getting the 4 steam IDs, else loop client.
-2.1.2:
-* Removed if(!g_hUseMySQL.BoolValue){} in Event_Recheck. I dont recall why that check was there...
-* Added hooks for jointeam and joinclass commands. Previously, only the player_team event was being hooked.
-2.1.3:
-* Accidently returned Plugin_Handled instead of Plugin_Continue on the hooks for jointeam and joinclass. Fixed that.
-2.1.4:
-* Added spec cmd hooks.
-2.2.0:
-* Fixed an improper indexing of a_sSteamIDs in GetTags.
-* Added debug cvar and full debug code.
-* Converted several things to use 1.8 syntax classes (methodmaps) where they weren't before.
-* Modidied the GetTags function a bit.
-* Added IsValidClient check inside GetTags, though i believe it was filtered in the calling functions, but perhaps not each instance.
+**2.0.1:**
+* Added check for blank IP before running queries just to be safe.
+**2.0:**
+* Converted to 1.8 syntax.
+* Added option to use mysql DB and recoded plugin to support either MySQL or kv file.
+* Added "enabled" key value.
+* Edited documentation to include "exclude" key-value.
+* Added cache of all setups.
+* Added round-end re-check of DB setups count for checking if a new setup has been added.
+**1.5:**
+* Added "ignore" kv.
+**1.4:**
+* Edited togsclantags_enforcetags cvar: was missing 'c' in name, and added an option to allow tags if they exist in the cfg.
+**1.3:**
+* Minor edits to make sure clients load tag when spawning in late, etc.
+**1.2:**
+* Added OnRebuildAdminCache event.
+* Added cvar for rechecking client against cfg file on a configurable interval. This was added so that the plugin can interact with other plugins that dont fwd admin cache changes properly.
+**1.1:**
+* Fixed memory leak due to missing a CloseHandle on one of the returns.
+**1.0:**
+* Plugin coded for private. Released to Allied Modders after suggestion from requester.
