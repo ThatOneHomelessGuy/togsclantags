@@ -175,4 +175,4 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 
 
 
-###Check out my plugin list: http://www.togcoding.tech/togcoding/index.php
+###Check out my plugin list: http://www.togcoding.com/togcoding/index.php
