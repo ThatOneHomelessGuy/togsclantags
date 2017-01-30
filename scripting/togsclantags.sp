@@ -4,7 +4,7 @@
 */
 
 #pragma semicolon 1
-#define PLUGIN_VERSION "2.2.0"
+#define PLUGIN_VERSION "2.2.1"
 #define LoopValidPlayers(%1,%2)\
 	for(int %1 = 1;%1 <= MaxClients; ++%1)\
 		if(IsValidClient(%1, %2))
@@ -73,7 +73,7 @@ public void OnPluginStart()
 	
 	g_hUpdateFreq = AutoExecConfig_CreateConVar("togsclantags_updatefreq", "0", "Frequency to re-load clients from cfg file (0 = only check once). This function is namely used to help interact with other plugins changing admin status late.", FCVAR_NONE, true, 0.0);
 	
-	g_hUseMySQL = AutoExecConfig_CreateConVar("togsclantags_use_mysql", "1", "Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups)", FCVAR_NONE, true, 0.0, true, 1.0);
+	g_hUseMySQL = AutoExecConfig_CreateConVar("togsclantags_use_mysql", "0", "Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups)", FCVAR_NONE, true, 0.0, true, 1.0);
 
 	g_hDebug = AutoExecConfig_CreateConVar("togsclantags_debug", "0", "Enable debug mode? (1 = Yes, produce debug files (note, this can produce large files), 0 = Disable debug mode)", FCVAR_NONE, true, 0.0, true, 1.0);
 	
@@ -963,4 +963,6 @@ CHANGELOG:
 		* Converted several things to use 1.8 syntax classes (methodmaps) where they weren't before.
 		* Modidied the GetTags function a bit.
 		* Added IsValidClient check inside GetTags, though i believe it was filtered in the calling functions, but perhaps not each instance.
+	2.2.1:
+		* Added handling for when no setups apply to server.
 */
