@@ -198,7 +198,7 @@ public void SQLCallback_Connect(Database oDB, const char[] sError, any data)
 
 public void SQLCallback_Void(Database oDB, DBResultSet oResultsSet, const char[] sError, any iValue)
 {
-	if(oDB == null)
+	if(oDB == null || oResultsSet == null)
 	{
 		SetFailState("Error (%i): %s", iValue, sError);
 	}
@@ -233,7 +233,7 @@ void GetSetupsCount()
 
 public void SQLCallback_SetupsCnt(Database oDB, DBResultSet oResultsSet, const char[] sError, any iValue)
 {
-	if(oDB == null)
+	if(oDB == null || oResultsSet == null)
 	{
 		SetFailState("Error (%i): %s", iValue, sError);
 	}
@@ -411,7 +411,7 @@ public Action TimerCB_RetryConn(Handle hTimer)
 
 public void SQLCallback_GetSetups(Database oDB, DBResultSet oResultsSet, const char[] sError, any iValue)
 {
-	if(oDB == null)
+	if(oDB == null || oResultsSet == null)
 	{
 		SetFailState("Error (%i): %s", iValue, sError);
 	}
