@@ -4,7 +4,7 @@
 */
 
 #pragma semicolon 1
-#define PLUGIN_VERSION "2.2.1"
+#define PLUGIN_VERSION "2.2.2"
 #define LoopValidPlayers(%1,%2)\
 	for(int %1 = 1;%1 <= MaxClients; ++%1)\
 		if(IsValidClient(%1, %2))
@@ -168,7 +168,15 @@ public void SQLCallback_Connect(Database oDB, const char[] sError, any data)
 	else
 	{
 		g_oDatabase = oDB;
-		char sQuery[600];
+		char sDriver[64], sQuery[600];
+		
+		DBDriver oDriver = g_oDatabase.Driver;
+		oDriver.GetIdentifier(sDriver, sizeof(sDriver));
+		if(StrEqual(sDriver, "sqlite", false))
+		{
+			SetFailState("This plugin cannot use SQLite due to the need for server operators to create setups. Either use a MySQL database (with CVar setting: \"togsclantags_use_mysql\" \"1\"), or use the config file (with CVar setting: \"togsclantags_use_mysql\" \"0\").");
+		}
+		
 		PrintToServer("Database connection established for togsclantags!");
 		
 		/*	`id` INT(20) NOT NULL AUTO_INCREMENT,
@@ -271,8 +279,7 @@ void LoadSetups()
 		
 		if(g_oDatabase == null)
 		{
-			g_iDBLoaded = 1;
-			Database.Connect(SQLCallback_Connect, "togsclantags");
+			SetDBHandle();
 			return;
 		}
 		else
@@ -733,7 +740,7 @@ void GetTags(int client)
 			{
 				Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s. Setup is in Steam ID category, but does not match.", client, i+1, iSetupCnt, sBuffer);
 			}
-	}
+		}
 		else if(HasFlags(client, sBuffer)) //check if player has defined flags
 		{
 			if(g_hDebug.BoolValue)
@@ -965,4 +972,6 @@ CHANGELOG:
 		* Added IsValidClient check inside GetTags, though i believe it was filtered in the calling functions, but perhaps not each instance.
 	2.2.1:
 		* Added handling for when no setups apply to server.
+	2.2.2.:
+		* Added SetFailState for if the user is attempting to use SQLite.
 */
