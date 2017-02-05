@@ -44,7 +44,7 @@ public Plugin myinfo =
 	author = "That One Guy",
 	description = "Configurable clan tag setups.",
 	version = PLUGIN_VERSION,
-	url = "https://forums.alliedmods.net/member.php?u=188078"
+	url = "http://www.togcoding.com"
 }
 
 public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] sError, int err_max)
