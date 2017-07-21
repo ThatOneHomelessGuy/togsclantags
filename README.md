@@ -1,18 +1,18 @@
-#TOGs Clan Tags
+# TOGs Clan Tags
 (togsclantags)
 
 This plugin is fully customizable. You can make as many setups as desired, and have as many kinds of configurations as desired (all through a config file or database). The setups are fully explained inside the config file, but can also be found below.
 
 
 
-##Installation:
+## Installation:
 * togsclantags.smx to /addons/sourcemod/plugins/ folder.
 * Either use a database setup, similar to databases example file, or use togsclantags.cfg in /addons/sourcemod/configs/ folder.
 * Configure your setups in the config file or your mysql database, then load plugin, configure your cvars (/cfgs/sourcemod/togsclantags.cfg) and then you're set! Note: After changing the cvars in your cfg file, be sure to rcon the new values to the server so that they take effect immediately.
 
 
 
-##CVars:
+## CVars:
 * **togsclantags_admflag** - Admin flag(s) used for sm_rechecktags command.
 * **togsclantags_bots** - Do bots get tags? (1 = yes, 0 = no).
 * **togsclantags_enforcetags** -If no matching setup is found, should their tag be forced to be blank? (0 = allow players setting any clan tags they want, 1 = if no matching setup found, they can only use tags found in the cfg file, 2 = only get tags by having a matching setup in cfg file).
@@ -21,9 +21,8 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 
 
 
-##Default Cfg File:
-<details>
-<summary>Click to Open Spoiler</summary>
+## Default Cfg File:
+<details><summary>Click to Open Spoiler</summary>
 <p>
 <pre><code>
 //////////////////////////////////////////////////////////////////
@@ -116,9 +115,8 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 
 
 
-##Changelog:
-<details>
-<summary>Click to Open Spoiler</summary>
+## Changelog:
+<details><summary>Click to Open Spoiler</summary>
 <p>
 <b>2.2.0</b>
 <li>Fixed an improper indexing of a_sSteamIDs in GetTags.</li>
@@ -175,4 +173,4 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 
 
 
-###Check out my plugin list: http://www.togcoding.com/togcoding/index.php
+### Check out my plugin list: http://www.togcoding.com/togcoding/index.php
