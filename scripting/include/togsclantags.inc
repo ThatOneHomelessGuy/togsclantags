@@ -12,21 +12,21 @@
  * 
  * @return true if valid client and tags applied, false otherwise.
  */
-//native TOGsClanTags_SetExtTag(int client, char[] sExtTag);
+native bool TOGsClanTags_SetExtTag(int client, char[] sExtTag);
 
 /* 
  * Called on plugin load / reload.
  * 
  * @return	None.
  */ 
-//forward TOGsClanTagsLoaded();
+//forward void TOGsClanTagsLoaded();
 
 /* 
  * Called when a client finishes loading.
  * 
  * @return	None.
  */ 
-//forward TOGsClanTagsClientLoaded(client);
+//forward void TOGsClanTagsClientLoaded(int client);
 
 /**
  * Notify clan tags plugin to reload.
@@ -36,13 +36,22 @@
 native void TOGsClanTags_Reload();
 
 /**
+ * Notify clan tags plugin to reload.
+ * 
+ * @param	client			Client index
+ *
+ * @return true if valid client and tags reloaded, false otherwise.
+ */
+native bool TOGsClanTags_ReloadPlayer(int client);
+
+/**
  * Check if plugin is using mysql setups (else cfg file).
  * 
  * @return 1 if using mysql, 0 otherwise.
  */
 native int TOGsClanTags_UsingMysql();
 
-public SharedPlugin:__pl_togsclantags =
+public SharedPlugin __pl_togsclantags =
 {
 	name = "togsclantags",
 	file = "togsclantags.smx",
@@ -54,9 +63,10 @@ public SharedPlugin:__pl_togsclantags =
 };
 
 #if !defined REQUIRE_PLUGIN
-public __pl_togsclantags_SetNTVOptional()
+public void __pl_togsclantags_SetNTVOptional()
 {
 	MarkNativeAsOptional("TOGsClanTags_Reload");
+	MarkNativeAsOptional("TOGsClanTags_ReloadPlayer");
 	MarkNativeAsOptional("TOGsClanTags_UsingMysql");
 }
 #endif

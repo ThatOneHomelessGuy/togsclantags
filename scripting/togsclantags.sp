@@ -1,17 +1,19 @@
 /*
 	Potential To Do:
 	MaxTagLength = 12
+	
+	Add cmd for temporary tag override: sm_forcetag <target> <tag>
 */
 
 #pragma semicolon 1
-#define PLUGIN_VERSION "2.2.2"
+#define PLUGIN_VERSION "2.2.5"
 #define LoopValidPlayers(%1,%2)\
 	for(int %1 = 1;%1 <= MaxClients; ++%1)\
 		if(IsValidClient(%1, %2))
 
 #include <sourcemod>
 #include <cstrike>
-#include <autoexecconfig>	//https://github.com/Impact123/AutoExecConfig or https://forums.alliedmods.net/showthread.php?p=1862459
+#include <autoexecconfig>	//https://github.com/Impact123/AutoExecConfig or http://www.togcoding.com/showthread.php?p=1862459
 #pragma newdecls required
 
 char g_sCfgPath[PLATFORM_MAX_PATH];
@@ -25,6 +27,7 @@ ConVar g_hUseMySQL;
 ConVar g_hDebug;
 
 char ga_sTag[MAXPLAYERS + 1][50];
+char ga_sExtTag[MAXPLAYERS + 1][50];
 bool ga_bLoaded[MAXPLAYERS + 1] = {false, ...};
 
 ArrayList g_hValidTags;
@@ -51,7 +54,9 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] sError, int err_
 {
 	//g_bLateLoad = bLate;
 	CreateNative("TOGsClanTags_Reload", Native_ReloadPlugin);
+	CreateNative("TOGsClanTags_ReloadPlayer", Native_ReloadPlayer);
 	CreateNative("TOGsClanTags_UsingMysql", Native_UsingMysql);
+	CreateNative("TOGsClanTags_SetExtTag", Native_SetExtTag);
 	
 	RegPluginLibrary("togsclantags");
 	
@@ -229,13 +234,16 @@ void GetSetupsCount()
 		GetServerIP();
 	}
 	
-	if(g_oDatabase != null)
+	if(g_hUseMySQL.BoolValue)
 	{
-		char sQuery[150];
-		Format(sQuery, sizeof(sQuery), "SELECT COUNT(*) \
-										FROM togsclantags_setups \
-										WHERE (server_ip LIKE '%%%s%%') OR (server_ip = '') OR (server_ip IS NULL)", g_sServerIP);
-		g_oDatabase.Query(SQLCallback_SetupsCnt, sQuery, 1);
+		if(g_oDatabase != null)
+		{
+			char sQuery[150];
+			Format(sQuery, sizeof(sQuery), "SELECT COUNT(*) \
+											FROM togsclantags_setups \
+											WHERE (server_ip LIKE '%%%s%%') OR (server_ip = '') OR (server_ip IS NULL)", g_sServerIP);
+			g_oDatabase.Query(SQLCallback_SetupsCnt, sQuery, 1);
+		}
 	}
 }
 
@@ -509,6 +517,31 @@ public int Native_ReloadPlugin(Handle hPlugin, int iNumParams)
 	ReRetrieveAllTags();
 }
 
+public int Native_ReloadPlayer(Handle hPlugin, int iNumParams)
+{
+	int client = GetNativeCell(1);
+	
+	if(IsValidClient(client))
+	{
+		ReRetrieveTags(client);
+		return true;
+	}
+	return false;
+}
+
+public int Native_SetExtTag(Handle hPlugin, int iNumParams)
+{
+	int client = GetNativeCell(1);
+	if(IsValidClient(client))
+	{
+		GetNativeString(2, ga_sExtTag[client], sizeof(ga_sExtTag[]));
+		ga_bLoaded[client] = false;
+		GetTags(client);
+		return true;
+	}
+	return false;
+}
+
 public int Native_UsingMysql(Handle hPlugin, int iNumParams)
 {
 	if(g_hUseMySQL.BoolValue)
@@ -520,10 +553,13 @@ public int Native_UsingMysql(Handle hPlugin, int iNumParams)
 
 public Action Cmd_ResetTags(int client, int iArgs)
 {
-	if(!HasFlags(client, g_sAdminFlag))
+	if(IsValidClient(client))
 	{
-		ReplyToCommand(client, "\x04You do not have access to this command!");
-		return Plugin_Handled;
+		if(!HasFlags(client, g_sAdminFlag))
+		{
+			ReplyToCommand(client, "\x04You do not have access to this command!");
+			return Plugin_Handled;
+		}
 	}
 	
 	LoadSetups();
@@ -536,23 +572,30 @@ void ReRetrieveAllTags()
 {
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(IsValidClient(i, g_hIncludeBots.BoolValue))
-		{
-			ga_bLoaded[i] = false;
-			GetTags(i);
-		}
+		ReRetrieveTags(i);
+	}
+}
+
+void ReRetrieveTags(int client)
+{
+	if(IsValidClient(client, g_hIncludeBots.BoolValue))
+	{
+		ga_bLoaded[client] = false;
+		GetTags(client);
 	}
 }
 
 public void OnClientConnected(int client)
 {
 	ga_sTag[client] = "";
+	ga_sExtTag[client] = "";
 	ga_bLoaded[client] = false;
 }
 
 public void OnClientDisconnect(int client)
 {
 	ga_sTag[client] = "";
+	ga_sExtTag[client] = "";
 	ga_bLoaded[client] = false;
 }
 
@@ -671,94 +714,105 @@ void GetTags(int client)
 	
 	ga_sTag[client] = "";
 	
-	char sBuffer[150], a_sSteamIDs[4][65];
-	if(!IsValidClient(client))
+	if(!StrEqual(ga_sExtTag[client], "", false))
 	{
-		Format(a_sSteamIDs[0], sizeof(a_sSteamIDs[]), "BOT");
-		Format(a_sSteamIDs[1], sizeof(a_sSteamIDs[]), "BOT");
-		Format(a_sSteamIDs[2], sizeof(a_sSteamIDs[]), "BOT");
-		Format(a_sSteamIDs[3], sizeof(a_sSteamIDs[]), "BOT");
-	}
-	else
-	{
-		if(IsClientAuthorized(client))
+		char sBuffer[150], a_sSteamIDs[4][65];
+		if(!IsValidClient(client))
 		{
-			GetClientAuthId(client, AuthId_Steam2, a_sSteamIDs[0], sizeof(a_sSteamIDs[]));
-			ReplaceString(a_sSteamIDs[0], sizeof(a_sSteamIDs[]), "STEAM_1", "STEAM_0", false);
-			GetClientAuthId(client, AuthId_Steam2, a_sSteamIDs[1], sizeof(a_sSteamIDs[]));
-			ReplaceString(a_sSteamIDs[1], sizeof(a_sSteamIDs[]), "STEAM_0", "STEAM_1", false);
-			GetClientAuthId(client, AuthId_Steam3, a_sSteamIDs[2], sizeof(a_sSteamIDs[]));
-			GetClientAuthId(client, AuthId_SteamID64, a_sSteamIDs[3], sizeof(a_sSteamIDs[]));
+			Format(a_sSteamIDs[0], sizeof(a_sSteamIDs[]), "BOT");
+			Format(a_sSteamIDs[1], sizeof(a_sSteamIDs[]), "BOT");
+			Format(a_sSteamIDs[2], sizeof(a_sSteamIDs[]), "BOT");
+			Format(a_sSteamIDs[3], sizeof(a_sSteamIDs[]), "BOT");
 		}
 		else
 		{
-			CreateTimer(5.0, TimerCB_RetryLoadClient, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+			if(IsClientAuthorized(client))
+			{
+				GetClientAuthId(client, AuthId_Steam2, a_sSteamIDs[0], sizeof(a_sSteamIDs[]));
+				ReplaceString(a_sSteamIDs[0], sizeof(a_sSteamIDs[]), "STEAM_1", "STEAM_0", false);
+				GetClientAuthId(client, AuthId_Steam2, a_sSteamIDs[1], sizeof(a_sSteamIDs[]));
+				ReplaceString(a_sSteamIDs[1], sizeof(a_sSteamIDs[]), "STEAM_0", "STEAM_1", false);
+				GetClientAuthId(client, AuthId_Steam3, a_sSteamIDs[2], sizeof(a_sSteamIDs[]));
+				GetClientAuthId(client, AuthId_SteamID64, a_sSteamIDs[3], sizeof(a_sSteamIDs[]));
+			}
+			else
+			{
+				CreateTimer(5.0, TimerCB_RetryLoadClient, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+			}
 		}
-	}
-	
-	if(g_hDebug.BoolValue)
-	{
-		Log("togsclantags_debug.log", "Auth IDs for %L: %s ; %s ; %s ; %s", client, a_sSteamIDs[0], a_sSteamIDs[1], a_sSteamIDs[2], a_sSteamIDs[3]);
-	}
-
-	int iSetupCnt = g_hFlags.Length;
-	for(int i = 0; i < iSetupCnt; i++)
-	{
-		g_hFlags.GetString(i, sBuffer, sizeof(sBuffer));
+		
 		if(g_hDebug.BoolValue)
 		{
-			Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s", client, i+1, iSetupCnt, sBuffer);
+			Log("togsclantags_debug.log", "Auth IDs for %L: %s ; %s ; %s ; %s", client, a_sSteamIDs[0], a_sSteamIDs[1], a_sSteamIDs[2], a_sSteamIDs[3]);
 		}
-		if(StrEqual("BOT", sBuffer, false)) //check if BOT config
+
+		int iSetupCnt = g_hFlags.Length;
+		for(int i = 0; i < iSetupCnt; i++)
 		{
+			g_hFlags.GetString(i, sBuffer, sizeof(sBuffer));
 			if(g_hDebug.BoolValue)
 			{
-				Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s. Setup is in 'BOT' category.", client, i+1, iSetupCnt, sBuffer);
+				Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s", client, i+1, iSetupCnt, sBuffer);
 			}
-			if(StrEqual("BOT", a_sSteamIDs[0], false)) //check if player is BOT
-			{
-				g_hTags.GetString(i, ga_sTag[client], sizeof(ga_sTag[]));
-				break;
-			}
-		}
-		else if(HasNumbers(sBuffer) || (StrContains(sBuffer, ":", false) != -1))	//if steam ID
-		{
-			if(StrEqual(sBuffer, a_sSteamIDs[0], false) || StrEqual(sBuffer, a_sSteamIDs[1], false) || StrEqual(sBuffer, a_sSteamIDs[2], false) || StrEqual(sBuffer, a_sSteamIDs[3], false))
+			if(StrEqual("BOT", sBuffer, false)) //check if BOT config
 			{
 				if(g_hDebug.BoolValue)
 				{
-					Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s. Matching setup found in Steam IDs!", client, i+1, iSetupCnt, sBuffer);
+					Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s. Setup is in 'BOT' category.", client, i+1, iSetupCnt, sBuffer);
 				}
-				
+				if(StrEqual("BOT", a_sSteamIDs[0], false)) //check if player is BOT
+				{
+					g_hTags.GetString(i, ga_sTag[client], sizeof(ga_sTag[]));
+					break;
+				}
+			}
+			else if(HasNumbers(sBuffer) || (StrContains(sBuffer, ":", false) != -1))	//if steam ID
+			{
+				if(StrEqual(sBuffer, a_sSteamIDs[0], false) || StrEqual(sBuffer, a_sSteamIDs[1], false) || StrEqual(sBuffer, a_sSteamIDs[2], false) || StrEqual(sBuffer, a_sSteamIDs[3], false))
+				{
+					if(g_hDebug.BoolValue)
+					{
+						Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s. Matching setup found in Steam IDs!", client, i+1, iSetupCnt, sBuffer);
+					}
+					
+					if(!g_hIgnored.Get(i))
+					{
+						g_hTags.GetString(i, ga_sTag[client], sizeof(ga_sTag[]));
+					}
+					break;
+				}
+				else if(g_hDebug.BoolValue)
+				{
+					Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s. Setup is in Steam ID category, but does not match.", client, i+1, iSetupCnt, sBuffer);
+				}
+			}
+			else if(HasFlags(client, sBuffer)) //check if player has defined flags
+			{
+				if(g_hDebug.BoolValue)
+				{
+					Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s. Matching setup found in flags category!", client, i+1, iSetupCnt, sBuffer);
+				}
 				if(!g_hIgnored.Get(i))
 				{
 					g_hTags.GetString(i, ga_sTag[client], sizeof(ga_sTag[]));
 				}
 				break;
 			}
-			else if(g_hDebug.BoolValue)
+			else
 			{
-				Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s. Setup is in Steam ID category, but does not match.", client, i+1, iSetupCnt, sBuffer);
+				if(g_hDebug.BoolValue)
+				{
+					Log("togsclantags_debug.log", "No matches found for %L against flag (%i/%i): %s.", client, i+1, iSetupCnt, sBuffer);
+				}
 			}
 		}
-		else if(HasFlags(client, sBuffer)) //check if player has defined flags
+	}
+	else
+	{
+		strcopy(ga_sTag[client], sizeof(ga_sTag[]), ga_sExtTag[client]);
+		if(g_hDebug.BoolValue)
 		{
-			if(g_hDebug.BoolValue)
-			{
-				Log("togsclantags_debug.log", "Checking %L against flag (%i/%i): %s. Matching setup found in flags category!", client, i+1, iSetupCnt, sBuffer);
-			}
-			if(!g_hIgnored.Get(i))
-			{
-				g_hTags.GetString(i, ga_sTag[client], sizeof(ga_sTag[]));
-			}
-			break;
-		}
-		else
-		{
-			if(g_hDebug.BoolValue)
-			{
-				Log("togsclantags_debug.log", "No matches found for %L against flag (%i/%i): %s.", client, i+1, iSetupCnt, sBuffer);
-			}
+			Log("togsclantags_debug.log", "Tag for %L set by external plugin: %s.", client, ga_sTag[client]);
 		}
 	}
 	ga_bLoaded[client] = true;
@@ -972,6 +1026,14 @@ CHANGELOG:
 		* Added IsValidClient check inside GetTags, though i believe it was filtered in the calling functions, but perhaps not each instance.
 	2.2.1:
 		* Added handling for when no setups apply to server.
-	2.2.2.:
+	2.2.2:
 		* Added SetFailState for if the user is attempting to use SQLite.
+	2.2.3:
+		* Added check inside GetSetupsCount for if MySQL is being used before checking setups count. It doesnt make any difference because it wouldnt have passed the null check for the database handle, but still good practice.
+	2.2.4:
+		* Made reload cmd rcon compatible.
+		* Added native to reload a single player.
+	2.2.5:
+		* Added back native TOGsClanTags_SetExtTag.
+		
 */
