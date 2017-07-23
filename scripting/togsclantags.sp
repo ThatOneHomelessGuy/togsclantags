@@ -6,7 +6,7 @@
 */
 
 #pragma semicolon 1
-#define PLUGIN_VERSION "2.2.5"
+#define PLUGIN_VERSION "2.2.6"
 #define LoopValidPlayers(%1,%2)\
 	for(int %1 = 1;%1 <= MaxClients; ++%1)\
 		if(IsValidClient(%1, %2))
@@ -714,7 +714,7 @@ void GetTags(int client)
 	
 	ga_sTag[client] = "";
 	
-	if(!StrEqual(ga_sExtTag[client], "", false))
+	if(StrEqual(ga_sExtTag[client], "", false))
 	{
 		char sBuffer[150], a_sSteamIDs[4][65];
 		if(!IsValidClient(client))
@@ -1035,5 +1035,7 @@ CHANGELOG:
 		* Added native to reload a single player.
 	2.2.5:
 		* Added back native TOGsClanTags_SetExtTag.
+	2.2.6:
+		* Fixed bug introduced with 2.2.5 regarding reverse logic for if an external tag is set.
 		
 */
