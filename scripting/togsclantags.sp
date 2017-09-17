@@ -57,6 +57,7 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] sError, int err_
 	CreateNative("TOGsClanTags_ReloadPlayer", Native_ReloadPlayer);
 	CreateNative("TOGsClanTags_UsingMysql", Native_UsingMysql);
 	CreateNative("TOGsClanTags_SetExtTag", Native_SetExtTag);
+	CreateNative("TOGsClanTags_HasTag", Native_HasTag);
 	
 	RegPluginLibrary("togsclantags");
 	
@@ -551,6 +552,21 @@ public int Native_UsingMysql(Handle hPlugin, int iNumParams)
 	return 0;
 }
 
+public int Native_HasTag(Handle hPlugin, int iNumParams)
+{
+ 	int client = GetNativeCell(1);
+ 	
+ 	if (client < 1 || client > MaxClients)
+  	{
+      return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%d)", client);
+   	}
+  	if (!IsClientConnected(client))
+   	{
+      return ThrowNativeError(SP_ERROR_NATIVE, "Client %d is not connected", client);
+   	}
+   
+	return ((strlen(ga_sTag[client]) > 0 ) || (strlen(ga_sExtTag[client]) > 0));
+}
 public Action Cmd_ResetTags(int client, int iArgs)
 {
 	if(IsValidClient(client))

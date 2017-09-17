@@ -51,6 +51,16 @@ native bool TOGsClanTags_ReloadPlayer(int client);
  */
 native int TOGsClanTags_UsingMysql();
 
+/**
+ * Check if a client have a TOGsClanTag.
+ *
+ * @param client		Client Index.
+ *
+ * @return	true if client has tag, false otherwise.
+ * @error 	Invalid client ndex or client not in game.
+ */
+native bool TOGsClanTags_HasTag(int client);
+
 public SharedPlugin __pl_togsclantags =
 {
 	name = "togsclantags",
