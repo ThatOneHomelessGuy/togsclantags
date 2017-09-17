@@ -57,7 +57,7 @@ native int TOGsClanTags_UsingMysql();
  * @param client		Client Index.
  *
  * @return	true if client has tag, false otherwise.
- * @error 	Invalid client ndex or client not in game.
+ * @error 	Invalid client index or client not in game.
  */
 native bool TOGsClanTags_HasTag(int client);
 
