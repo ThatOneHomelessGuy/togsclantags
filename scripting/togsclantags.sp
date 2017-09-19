@@ -558,9 +558,11 @@ public int Native_HasTag(Handle hPlugin, int iNumParams)
  	
  	if (client < 1 || client > MaxClients)
   	{
+		return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%d)", client);
    	}
   	if (!IsClientConnected(client))
    	{
+		return ThrowNativeError(SP_ERROR_NATIVE, "Client %d is not connected", client);
    	}
    
 	return ((strlen(ga_sTag[client]) > 0 ) || (strlen(ga_sExtTag[client]) > 0));
