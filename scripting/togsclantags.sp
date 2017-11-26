@@ -6,7 +6,7 @@
 */
 
 #pragma semicolon 1
-#define PLUGIN_VERSION "2.2.6"
+#define PLUGIN_VERSION "2.2.7"
 #define LoopValidPlayers(%1,%2)\
 	for(int %1 = 1;%1 <= MaxClients; ++%1)\
 		if(IsValidClient(%1, %2))
@@ -57,6 +57,9 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] sError, int err_
 	CreateNative("TOGsClanTags_ReloadPlayer", Native_ReloadPlayer);
 	CreateNative("TOGsClanTags_UsingMysql", Native_UsingMysql);
 	CreateNative("TOGsClanTags_SetExtTag", Native_SetExtTag);
+	CreateNative("TOGsClanTags_HasAnyTag", Native_HasAnyTag);
+	CreateNative("TOGsClanTags_HasMainTag", Native_HasMainTag);
+	CreateNative("TOGsClanTags_HasExtTag", Native_HasExtTag);
 	
 	RegPluginLibrary("togsclantags");
 	
@@ -517,6 +520,15 @@ public int Native_ReloadPlugin(Handle hPlugin, int iNumParams)
 	ReRetrieveAllTags();
 }
 
+public int Native_UsingMysql(Handle hPlugin, int iNumParams)
+{
+	if(g_hUseMySQL.BoolValue)
+	{
+		return 1;
+	}
+	return 0;
+}
+
 public int Native_ReloadPlayer(Handle hPlugin, int iNumParams)
 {
 	int client = GetNativeCell(1);
@@ -526,7 +538,41 @@ public int Native_ReloadPlayer(Handle hPlugin, int iNumParams)
 		ReRetrieveTags(client);
 		return true;
 	}
-	return false;
+	
+	return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%i) or client not connected (add check before using native).", client);
+}
+
+public int Native_HasAnyTag(Handle hPlugin, int iNumParams)		//pull request by Hexer10
+{
+	int client = GetNativeCell(1);
+	if(IsValidClient(client))
+	{
+		return ((strlen(ga_sTag[client]) > 0) || (strlen(ga_sExtTag[client]) > 0));
+	}
+	
+	return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%i) or client not connected (add check before using native).", client);
+}
+
+public int Native_HasMainTag(Handle hPlugin, int iNumParams)
+{
+	int client = GetNativeCell(1);
+	if(IsValidClient(client))
+	{
+		return (strlen(ga_sTag[client]) > 0);
+	}
+	
+	return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%i) or client not connected (add check before using native).", client);
+}
+
+public int Native_HasExtTag(Handle hPlugin, int iNumParams)
+{
+	int client = GetNativeCell(1);
+	if(IsValidClient(client))
+	{
+		return (strlen(ga_sExtTag[client]) > 0);
+	}
+	
+	return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%i) or client not connected (add check before using native).", client);
 }
 
 public int Native_SetExtTag(Handle hPlugin, int iNumParams)
@@ -539,16 +585,7 @@ public int Native_SetExtTag(Handle hPlugin, int iNumParams)
 		GetTags(client);
 		return true;
 	}
-	return false;
-}
-
-public int Native_UsingMysql(Handle hPlugin, int iNumParams)
-{
-	if(g_hUseMySQL.BoolValue)
-	{
-		return 1;
-	}
-	return 0;
+	return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%i) or client not connected (add check before using native).", client);
 }
 
 public Action Cmd_ResetTags(int client, int iArgs)
@@ -1037,5 +1074,9 @@ CHANGELOG:
 		* Added back native TOGsClanTags_SetExtTag.
 	2.2.6:
 		* Fixed bug introduced with 2.2.5 regarding reverse logic for if an external tag is set.
+	2.2.7:
+		* Added native TOGsClanTags_HasAnyTag per pull request by Hexer10. While at it, added natives for TOGsClanTags_HasMainTag and TOGsClanTags_HasExtTag.
+		* Grouped code for similar native functions near each other.
+		* Changed natives from returning false if invalid clients are passed to now return a native error.
 		
 */
