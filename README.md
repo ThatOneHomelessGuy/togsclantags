@@ -118,6 +118,23 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 ## Changelog:
 <details><summary>Click to Open Spoiler</summary>
 <p>
+<b>2.2.7</b>
+<li>Added native TOGsClanTags_HasAnyTag per pull request by Hexer10. While at it, added natives for TOGsClanTags_HasMainTag and TOGsClanTags_HasExtTag.</li>
+<li>Grouped code for similar native functions near each other.</li>
+<li>Changed natives from returning false if invalid clients are passed to now return a native error.</li>
+<b>2.2.6</b>
+<li>Fixed bug introduced with 2.2.5 regarding reverse logic for if an external tag is set.</li>
+<b>2.2.5</b>
+<li>Added back native TOGsClanTags_SetExtTag.</li>
+<b>2.2.4</b>
+<li>Made reload cmd rcon compatible.</li>
+<li>Added native to reload a single player.</li>
+<b>2.2.3</b>
+<li>Added check inside GetSetupsCount for if MySQL is being used before checking setups count. It doesnt make any difference because it wouldnt have passed the null check for the database handle, but still good practice.</li>
+<b>2.2.2</b>
+<li>Added SetFailState for if the user is attempting to use SQLite.</li>
+<b>2.2.1</b>
+<li>Added handling for when no setups apply to server.</li>
 <b>2.2.0</b>
 <li>Fixed an improper indexing of a_sSteamIDs in GetTags.</li>
 <li>Added debug cvar and full debug code.</li>
