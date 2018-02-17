@@ -8,3 +8,17 @@
 		"timeout"			"300"
 	}
 	
+
+//Database table field explanations:
+//		`id`					Leave blank. This is a unique identifier that will auto-increment.
+//		`setup_type`			See "flag" in togsclantags.cfg file.
+//		`enable_setup`			See "enabled" in togsclantags.cfg file.
+//		`exclude_setup`			See "exclude" in togsclantags.cfg file.
+//		`ignore_setup`			See "ignore" in togsclantags.cfg file.
+//		`tagtext`				See "tag" in togsclantags.cfg file.
+//		`server_ip`				Leave blank to apply to all servers. Otherwise, create a list of server IP:Ports to use this setup for. Each server will see if their IP:Port is anywhere in the entire text.
+//									e.g. "123.45.678:27015 ; 987.65.432:27015"
+//									Note: You can use any delimited (separator) you want. As long as the IP:Port is found anywhere in the text.
+//										e.g. "sfjsroifgjs123.45.678:27015adawdacx" would work for 123.45.678:27015.
+//		`setup_order`			See ORDER OF OPERATION in togsclantags.cfg file. Order these numerically, with lowest numbers being first. Numbers can be repeated on multiple setups if it doesnt matter which order between them.
+//		`dont_remove`			For use by external plugins. Set to 1 by default. Notifies external plugins interacting with the database that the setup should not be removed. Setups added by other plugins should set this to 0.
