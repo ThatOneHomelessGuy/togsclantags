@@ -11,8 +11,6 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 * Configure your setups in the config file or your mysql database, then load plugin, configure your cvars (/cfgs/sourcemod/togsclantags.cfg) and then you're set! Note: After changing the cvars in your cfg file, be sure to rcon the new values to the server so that they take effect immediately.
 
 ## CVars:
-<details><summary>Click to View CVars</summary>
-<p>
 * **togsclantags_version** - TOG Clan Tags: Version
 * **togsclantags_admflag** - Admin flag(s) used for sm_rechecktags command.
 * **togsclantags_bots** - Do bots get tags? (1 = yes, 0 = no)
@@ -20,15 +18,9 @@ This plugin is fully customizable. You can make as many setups as desired, and h
 * **togsclantags_updatefreq** - Frequency to re-load clients from cfg file (0 = only check once). This function is namely used to help interact with other plugins changing admin status late.
 * **togsclantags_use_mysql** - Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups)
 * **togsclantags_debug** - Enable debug mode? (1 = Yes, produce debug files (note, this can produce large files), 0 = Disable debug mode)
-</p>
-</details>
 
 ## Player Commands:
-<details><summary>Click to View Player Commands</summary>
-<p>
 * **sm_rechecktags** - Recheck tags for all players in the server.
-</p>
-</details>
 
 ## Default Cfg File:
 <details><summary>Click to Open Spoiler</summary>
