@@ -3,24 +3,38 @@
 
 This plugin is fully customizable. You can make as many setups as desired, and have as many kinds of configurations as desired (all through a config file or database). The setups are fully explained inside the config file, but can also be found below.
 
-
-
 ## Installation:
 * togsclantags.smx to /addons/sourcemod/plugins/ folder.
 * Either use a database setup, similar to databases example file, or use togsclantags.cfg in /addons/sourcemod/configs/ folder.
 * Configure your setups in the config file or your mysql database, then load plugin, configure your cvars (/cfgs/sourcemod/togsclantags.cfg) and then you're set! Note: After changing the cvars in your cfg file, be sure to rcon the new values to the server so that they take effect immediately.
 
 ## CVars:
+<details><summary>Click to View CVars</summary>
+<p>
+
 * **togsclantags_version** - TOG Clan Tags: Version
+
 * **togsclantags_admflag** - Admin flag(s) used for sm_rechecktags command.
+
 * **togsclantags_bots** - Do bots get tags? (1 = yes, 0 = no)
+
 * **togsclantags_enforcetags** - If no matching setup is found, should their tag be forced to be blank? (0 = allow players setting any clan tags they want, 1 = if no matching setup found, they can only use tags found in the cfg file, 2 = only get tags by having a matching setup in cfg file or database).
+
 * **togsclantags_updatefreq** - Frequency to re-load clients from cfg file (0 = only check once). This function is namely used to help interact with other plugins changing admin status late.
+
 * **togsclantags_use_mysql** - Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups)
+
 * **togsclantags_debug** - Enable debug mode? (1 = Yes, produce debug files (note, this can produce large files), 0 = Disable debug mode)
+</p>
+</details>
 
 ## Player Commands:
+<details><summary>Click to View Player Commands</summary>
+<p>
+
 * **sm_rechecktags** - Recheck tags for all players in the server.
+</p>
+</details>
 
 ## Default Cfg File:
 <details><summary>Click to Open Spoiler</summary>
