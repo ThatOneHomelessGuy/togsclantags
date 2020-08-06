@@ -6,7 +6,7 @@
 */
 
 #pragma semicolon 1
-#define PLUGIN_VERSION "2.2.7"
+#define PLUGIN_VERSION "2.2.9"
 #define LoopValidPlayers(%1,%2)\
 	for(int %1 = 1;%1 <= MaxClients; ++%1)\
 		if(IsValidClient(%1, %2))
@@ -25,6 +25,7 @@ ConVar g_hEnforceTags;
 ConVar g_hUpdateFreq;
 ConVar g_hUseMySQL;
 ConVar g_hDebug;
+ConVar g_hExtOverrides;
 
 char ga_sTag[MAXPLAYERS + 1][50];
 char ga_sExtTag[MAXPLAYERS + 1][50];
@@ -84,6 +85,8 @@ public void OnPluginStart()
 	g_hUseMySQL = AutoExecConfig_CreateConVar("togsclantags_use_mysql", "0", "Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups)", FCVAR_NONE, true, 0.0, true, 1.0);
 
 	g_hDebug = AutoExecConfig_CreateConVar("togsclantags_debug", "0", "Enable debug mode? (1 = Yes, produce debug files (note, this can produce large files), 0 = Disable debug mode)", FCVAR_NONE, true, 0.0, true, 1.0);
+	
+	g_hExtOverrides = AutoExecConfig_CreateConVar("togsclantags_ext_overrd", "1", "Should tags from external plugins override other tags? (1 = Yes, external tags always override. 0 = Cfg/database tags take priority)", FCVAR_NONE, true, 0.0, true, 1.0);
 	
 	AutoExecConfig_ExecuteFile();
 	AutoExecConfig_CleanFile();
@@ -581,6 +584,10 @@ public int Native_SetExtTag(Handle hPlugin, int iNumParams)
 	if(IsValidClient(client))
 	{
 		GetNativeString(2, ga_sExtTag[client], sizeof(ga_sExtTag[]));
+		if(g_hDebug.BoolValue)
+		{
+			Log("togsclantags_debug.log", "%L has an external tag being set: %s. Reloading tags.", client, ga_sExtTag[client]);
+		}
 		ga_bLoaded[client] = false;
 		GetTags(client);
 		return true;
@@ -751,7 +758,7 @@ void GetTags(int client)
 	
 	ga_sTag[client] = "";
 	
-	if(StrEqual(ga_sExtTag[client], "", false))
+	if(StrEqual(ga_sExtTag[client], "", false) || !g_hExtOverrides.BoolValue)
 	{
 		char sBuffer[150], a_sSteamIDs[4][65];
 		if(!IsValidClient(client))
@@ -844,7 +851,8 @@ void GetTags(int client)
 			}
 		}
 	}
-	else
+	
+	if(!StrEqual(ga_sExtTag[client], "", false) && StrEqual(ga_sTag[client], "", false))	//either no tag was set from config/database, or an external tag takes priority
 	{
 		strcopy(ga_sTag[client], sizeof(ga_sTag[]), ga_sExtTag[client]);
 		if(g_hDebug.BoolValue)
@@ -882,15 +890,28 @@ stock bool IsNumeric(char[] sString)
 
 void CheckTags(int client)
 {
+	if(g_hDebug.BoolValue)
+	{
+		Log("togsclantags_debug.log", "%L is starting CheckTags function.", client);
+	}
+	
 	if(!ga_bLoaded[client])
 	{
 		GetTags(client);
+		if(g_hDebug.BoolValue)
+		{
+			Log("togsclantags_debug.log", "%L is not loaded - getting tags.", client);
+		}
 		return;
 	}
 	
 	if(!StrEqual(ga_sTag[client], "", true))
 	{
 		CS_SetClientClanTag(client, ga_sTag[client]);
+		if(g_hDebug.BoolValue)
+		{
+			Log("togsclantags_debug.log", "%L is having their tag set to %s.", client, ga_sTag[client]);
+		}
 	}
 	else if(g_hEnforceTags.IntValue == 1)
 	{
@@ -899,11 +920,26 @@ void CheckTags(int client)
 		if(g_hValidTags.FindString(sTag) == -1)
 		{
 			CS_SetClientClanTag(client, "");
+			if(g_hDebug.BoolValue)
+			{
+				Log("togsclantags_debug.log", "%L had an invalid tag (%s) which was removed.", client, sTag);
+			}
+		}
+		else
+		{
+			if(g_hDebug.BoolValue)
+			{
+				Log("togsclantags_debug.log", "%L is having their tag set to %s.", client, ga_sTag[client]);
+			}
 		}
 	}
 	else if(g_hEnforceTags.IntValue == 2)
 	{
 		CS_SetClientClanTag(client, "");
+		if(g_hDebug.BoolValue)
+		{
+			Log("togsclantags_debug.log", "%L has their tag removed.", client);
+		}
 	}
 }
 
@@ -1078,5 +1114,9 @@ CHANGELOG:
 		* Added native TOGsClanTags_HasAnyTag per pull request by Hexer10. While at it, added natives for TOGsClanTags_HasMainTag and TOGsClanTags_HasExtTag.
 		* Grouped code for similar native functions near each other.
 		* Changed natives from returning false if invalid clients are passed to now return a native error.
+	2.2.8
+		* Small change to add more messages when debug mode is enabled.
+	2.2.9
+		* Added CVar togsclantags_ext_overrd.
 		
 */
