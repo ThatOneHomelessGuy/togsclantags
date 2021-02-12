@@ -6,7 +6,7 @@
 */
 
 #pragma semicolon 1
-#define PLUGIN_VERSION "2.2.10"
+#define PLUGIN_VERSION "2.2.11"
 #define LoopValidPlayers(%1,%2)\
 	for(int %1 = 1;%1 <= MaxClients; ++%1)\
 		if(IsValidClient(%1, %2))
@@ -542,7 +542,7 @@ public int Native_IsClientLoaded(Handle hPlugin, int iNumParams)
 {
 	int client = GetNativeCell(1);
 	
-	if(!IsValidClient(client))
+	if(!IsValidClient(client, true))
 	{
 		return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%i) or client not connected (add check before using native).", client);
 	}
@@ -1141,5 +1141,7 @@ CHANGELOG:
 		* Added CVar togsclantags_ext_overrd.
 	2.2.10
 		* Added forward/native for players loading in and checking if they are already loaded.
+	2.2.11
+		* Minor edit to allow bots in the new native.
 		
 */
