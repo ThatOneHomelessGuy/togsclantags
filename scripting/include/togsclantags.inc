@@ -12,6 +12,13 @@
 native int TOGsClanTags_UsingMysql();
 
 /**
+ * Check if a player is loaded.
+ * 
+ * @return true if loaded, false otherwise.
+ */
+native bool TOGsClanTags_IsClientLoaded(int client);
+
+/**
  * Reloads clan tags plugin.
  * 
  * @return None.
@@ -70,18 +77,15 @@ native bool TOGsClanTags_HasMainTag(int client);
 native bool TOGsClanTags_HasExtTag(int client);
 
 /* 
- * Called on plugin load / reload.
- * 
- * @return	None.
- */ 
-//forward void TOGsClanTagsLoaded();
-
-/* 
  * Called when a client finishes loading.
+ *
+ * @param	iUserID			Client User ID
  * 
  * @return	None.
  */ 
-//forward void TOGsClanTagsClientLoaded(int client);
+forward void TOGsClanTags_OnClientLoaded(int iUserID);
+
+
 
 public SharedPlugin __pl_togsclantags =
 {
@@ -101,6 +105,7 @@ public void __pl_togsclantags_SetNTVOptional()
 	MarkNativeAsOptional("TOGsClanTags_Reload");
 	MarkNativeAsOptional("TOGsClanTags_ReloadPlayer");
 	MarkNativeAsOptional("TOGsClanTags_UsingMysql");
+	MarkNativeAsOptional("TOGsClanTags_IsClientLoaded");
 	MarkNativeAsOptional("TOGsClanTags_HasAnyTag");
 	MarkNativeAsOptional("TOGsClanTags_HasMainTag");
 	MarkNativeAsOptional("TOGsClanTags_HasExtTag");

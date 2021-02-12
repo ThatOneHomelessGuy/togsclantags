@@ -6,7 +6,7 @@
 */
 
 #pragma semicolon 1
-#define PLUGIN_VERSION "2.2.9"
+#define PLUGIN_VERSION "2.2.10"
 #define LoopValidPlayers(%1,%2)\
 	for(int %1 = 1;%1 <= MaxClients; ++%1)\
 		if(IsValidClient(%1, %2))
@@ -16,8 +16,7 @@
 #include <autoexecconfig>	//https://github.com/Impact123/AutoExecConfig or http://www.togcoding.com/showthread.php?p=1862459
 #pragma newdecls required
 
-char g_sCfgPath[PLATFORM_MAX_PATH];
-
+//CVars
 ConVar g_hAdminFlag;
 char g_sAdminFlag[30];
 ConVar g_hIncludeBots;
@@ -27,20 +26,24 @@ ConVar g_hUseMySQL;
 ConVar g_hDebug;
 ConVar g_hExtOverrides;
 
-char ga_sTag[MAXPLAYERS + 1][50];
-char ga_sExtTag[MAXPLAYERS + 1][50];
-bool ga_bLoaded[MAXPLAYERS + 1] = {false, ...};
-
+//Server variables
+Handle g_hFwdClientLoaded = INVALID_HANDLE;
+Database g_oDatabase;
 ArrayList g_hValidTags;
 ArrayList g_hTags;
 ArrayList g_hFlags;
 ArrayList g_hIgnored;
 
-Database g_oDatabase;
-//bool g_bLateLoad;
 char g_sServerIP[64] = "";
+char g_sCfgPath[PLATFORM_MAX_PATH];
 int g_iNumSetups = -1;
 int g_iDBLoaded = 0;
+//bool g_bLateLoad;
+
+//Player variables
+char ga_sTag[MAXPLAYERS + 1][50];
+char ga_sExtTag[MAXPLAYERS + 1][50];
+bool ga_bLoaded[MAXPLAYERS + 1] = {false, ...};
 
 public Plugin myinfo =
 {
@@ -57,6 +60,7 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] sError, int err_
 	CreateNative("TOGsClanTags_Reload", Native_ReloadPlugin);
 	CreateNative("TOGsClanTags_ReloadPlayer", Native_ReloadPlayer);
 	CreateNative("TOGsClanTags_UsingMysql", Native_UsingMysql);
+	CreateNative("TOGsClanTags_IsClientLoaded", Native_IsClientLoaded);
 	CreateNative("TOGsClanTags_SetExtTag", Native_SetExtTag);
 	CreateNative("TOGsClanTags_HasAnyTag", Native_HasAnyTag);
 	CreateNative("TOGsClanTags_HasMainTag", Native_HasMainTag);
@@ -80,7 +84,7 @@ public void OnPluginStart()
 	
 	g_hEnforceTags = AutoExecConfig_CreateConVar("togsclantags_enforcetags", "2", "If no matching setup is found, should their tag be forced to be blank? (0 = allow players setting any clan tags they want, 1 = if no matching setup found, they can only use tags found in the cfg file, 2 = only get tags by having a matching setup in cfg file or database).", FCVAR_NONE, true, 0.0, true, 2.0);
 	
-	g_hUpdateFreq = AutoExecConfig_CreateConVar("togsclantags_updatefreq", "0", "Frequency to re-load clients from cfg file (0 = only check once). This function is namely used to help interact with other plugins changing admin status late.", FCVAR_NONE, true, 0.0);
+	g_hUpdateFreq = AutoExecConfig_CreateConVar("togsclantags_updatefreq", "0", "Frequency (in seconds) to re-load clients from cfg file (0 = only check once). This function is namely used to help interact with other plugins changing admin status late.", FCVAR_NONE, true, 0.0);
 	
 	g_hUseMySQL = AutoExecConfig_CreateConVar("togsclantags_use_mysql", "0", "Use mysql? (1 = Use MySQL to manage setups, 0 = Use cfg file to manage setups)", FCVAR_NONE, true, 0.0, true, 1.0);
 
@@ -111,6 +115,8 @@ public void OnPluginStart()
 	g_hFlags = new ArrayList(150);
 	g_hIgnored = new ArrayList();
 	//LoadSetups();
+	
+	g_hFwdClientLoaded = CreateGlobalForward("TOGsClanTags_OnClientLoaded", ET_Ignore, Param_Cell);
 }
 
 public void OnCVarChange(ConVar hCVar, const char[] sOldValue, const char[] sNewValue)
@@ -532,6 +538,18 @@ public int Native_UsingMysql(Handle hPlugin, int iNumParams)
 	return 0;
 }
 
+public int Native_IsClientLoaded(Handle hPlugin, int iNumParams)
+{
+	int client = GetNativeCell(1);
+	
+	if(!IsValidClient(client))
+	{
+		return ThrowNativeError(SP_ERROR_NATIVE, "Invalid client index (%i) or client not connected (add check before using native).", client);
+	}
+	
+	return ga_bLoaded[client];
+}
+
 public int Native_ReloadPlayer(Handle hPlugin, int iNumParams)
 {
 	int client = GetNativeCell(1);
@@ -861,6 +879,9 @@ void GetTags(int client)
 		}
 	}
 	ga_bLoaded[client] = true;
+	Call_StartForward(g_hFwdClientLoaded);
+	Call_PushCell(GetClientUserId(client));
+	Call_Finish();
 	CheckTags(client);
 }
 
@@ -1118,5 +1139,7 @@ CHANGELOG:
 		* Small change to add more messages when debug mode is enabled.
 	2.2.9
 		* Added CVar togsclantags_ext_overrd.
+	2.2.10
+		* Added forward/native for players loading in and checking if they are already loaded.
 		
 */
