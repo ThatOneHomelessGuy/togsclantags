@@ -193,6 +193,11 @@ public void SQLCallback_Connect(Database oDB, const char[] sError, any data)
 		{
 			SetFailState("This plugin cannot use SQLite due to the need for server operators to create setups. Either use a MySQL database (with CVar setting: \"togsclantags_use_mysql\" \"1\"), or use the config file (with CVar setting: \"togsclantags_use_mysql\" \"0\").");
 		}
+		else
+		{
+			g_oDatabase.SetCharset("utf8mb4");
+			g_oDatabase.Query(SQLCallback_Void, "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;", 6);
+		}
 		
 		PrintToServer("Database connection established for togsclantags!");
 		
@@ -216,7 +221,7 @@ public void SQLCallback_Connect(Database oDB, const char[] sError, any data)
 											`server_ip` VARCHAR(300) NULL DEFAULT '',\
 											`setup_order` INT(10) NULL DEFAULT 0,\
 											`dont_remove` INT(2) NULL DEFAULT 1,\
-											PRIMARY KEY (`id`)) DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
+											PRIMARY KEY (`id`)) DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci AUTO_INCREMENT=1");
 		g_oDatabase.Query(SQLCallback_Void, sQuery, 1);
 	}
 }
