@@ -6,7 +6,7 @@
 */
 
 #pragma semicolon 1
-#define PLUGIN_VERSION "2.2.11"
+#define PLUGIN_VERSION "2.2.12"
 #define LoopValidPlayers(%1,%2)\
 	for(int %1 = 1;%1 <= MaxClients; ++%1)\
 		if(IsValidClient(%1, %2))
@@ -1148,5 +1148,7 @@ CHANGELOG:
 		* Added forward/native for players loading in and checking if they are already loaded.
 	2.2.11
 		* Minor edit to allow bots in the new native.
+	2.2.12
+		* Changed charset to utf8mb4.
 		
 */
